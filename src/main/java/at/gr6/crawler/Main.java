@@ -1,4 +1,4 @@
-package org.example;
+package at.gr6.crawler;
 import com.sun.net.httpserver.Headers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
