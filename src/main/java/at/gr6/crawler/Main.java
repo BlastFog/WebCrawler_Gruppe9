@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,12 +23,12 @@ public class Main {
     static int depth = 1;
     static TextResult result;
     static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
-    static boolean translate = true;
+    static boolean translate = false;
     static Link link;
 
     public static void main(String[] args) throws IOException, DeepLException, InterruptedException {
-        url = /*"http://www.broken-404.com"*/args[0];
-        depth = Integer.parseInt(args[1]);
+        //url = /*"http://www.broken-404.com"*/args[0];
+        /*depth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
         link = new Link(url, 0);
 
@@ -38,11 +39,21 @@ public class Main {
 
         sourceLanguage = getFullLanguage(getLanguage().toUpperCase());
         System.out.println("Source language: " + sourceLanguage);
-        System.out.println("Target language: " + getFullLanguage(targetLanguage.toUpperCase()));
+        System.out.println("Target language: " + getFullLanguage(targetLanguage.toUpperCase()));*/
+
+        writeFile();
     }
 
     private static void writeFile() {
+        try {
+            FileWriter fw = new FileWriter("./report.md");
+            fw.write("input: <a>"+url+"</a>\n");
 
+            System.out.println("AAAAAAAAA");
+            fw.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void readPage(Link link) throws IOException, DeepLException, InterruptedException {
@@ -51,7 +62,7 @@ public class Main {
 
             int currentDepth = link.getDepthCounter();
             Elements headers = doc.select("h1,h2,h3,h4,h5,h6"); //All Headers
-            Elements links = doc.select("a[href^=http]");       //All Links containing "http"
+            Elements links = doc.select("a[href^=http]");       //All Links with prefix "http"
             Link link1;
             Page page1 = new Page();
 
