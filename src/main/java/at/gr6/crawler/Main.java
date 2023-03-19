@@ -30,18 +30,95 @@ public class Main {
         url = args[0];
         depth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
-        link = new Link(url,0);
+        link = new Link(url, 0);
 
         String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
         translator = new Translator(authKey);
-
-        readPage(url);
+        System.out.println("--------------------PAGE-START--------------------");
+        readPage(link);
 
         getFullLanguage();
-        System.out.println("source language: "+sourceLanguage);
+        System.out.println("source language: " + sourceLanguage);
     }
 
-    private static void getFullLanguage(){
+    private static void writeFile() {
+
+    }
+
+    private static void readPage(Link link) throws IOException, DeepLException, InterruptedException {
+        doc = Jsoup.connect(link.getUrl()).get();
+        int currentDepth = link.getDepthCounter();
+        Elements headers = doc.select("h1,h2,h3,h4,h5,h6"); //All Headers
+        Elements links = doc.select("a[href^=http]");       //All Links containing "http"
+        Link link1;
+        Page page1 = new Page();
+
+
+        for (Element h : headers) {     //Headers
+            page1.getHeader().add(h);
+            translateHeader(h);
+        }
+
+        for (Element e : links) {
+            String url1 = e.attr("href");
+            //ystem.out.println(url1);
+
+            link1 = new Link(url1,currentDepth+1);    //Next Page is old depth+1
+            //System.out.println(link1);
+            page1.getLinks().add(link1);
+            depthSymbols(currentDepth+1);
+            System.out.println(link1);
+
+            if(currentDepth < depth) {
+                readPage(link1);
+                System.out.println("--------------------PAGE-START--------------------");
+            }
+        }
+        System.out.println("---------------------PAGE-END---------------------");
+
+    }
+
+    private static void depthSymbols(int depth){
+        //System.out.print("-");
+        for(int i = 0; i < depth; i++){
+            System.out.print("-");
+        }
+        System.out.print(">");
+    }
+
+    private static void translateHeader(Element e) throws DeepLException, InterruptedException {
+        if (translate)
+            result = translator.translateText(e.text(), null, targetLanguage);
+        else
+            result = new TextResult(e.text(), "de");
+
+        for (int i = Integer.parseInt(e.tagName().charAt(1) + ""); i > 0; i--) {
+            System.out.print("#");
+        }
+        sourceLanguage = result.getDetectedSourceLanguage();
+
+        if (!languageStatistics.containsKey(sourceLanguage))     //Für languate Statistik
+            languageStatistics.put(sourceLanguage, 1);
+        else
+            languageStatistics.put(sourceLanguage, languageStatistics.get(sourceLanguage) + 1);
+        System.out.println(" " + result.getText());
+
+    }
+
+    private static String getLanguage() {
+        int max = 0;
+        String lang = "";
+        for (String i : languageStatistics.keySet()) {
+            int val = languageStatistics.get(i);
+            if (val > max) {
+                max = val;
+                lang = i;
+            }
+        }
+        return lang;
+    }
+
+    private static void getFullLanguage() {
         switch (getLanguage().toUpperCase()) {
             case "BG":
                 sourceLanguage = "Bulgarian";
@@ -139,58 +216,5 @@ public class Main {
             default:
                 sourceLanguage = "Kärntnerisch";
         }
-    }
-
-    private static void writeFile() {
-
-    }
-
-    private static void readPage(String url) throws IOException, DeepLException, InterruptedException {
-        doc = Jsoup.connect(url).get();
-        Elements el = doc.select("h1,h2,h3,h4,h5,h6");
-        Elements links = doc.select("a[href]");
-        //List<Link> linksArr = new ArrayList<Link>();
-
-        readHeaders(el);
-
-        for (Element e : links) {
-            //linksArr.add(new e.attr("href"),1);
-            System.out.println(e.attr("href"));
-            readPage(e.attr("href"));
-        }
-
-    }
-
-    private static void readHeaders(Elements el) throws DeepLException, InterruptedException {
-        for (Element e : el) {
-            if(translate)
-                result = translator.translateText(e.text(), null, targetLanguage);
-            else
-                result = new TextResult(e.text(),"de");
-
-            for (int i = Integer.parseInt(e.tagName().charAt(1) + ""); i > 0; i--) {
-                System.out.print("#");
-            }
-            sourceLanguage = result.getDetectedSourceLanguage();
-
-            if (!languageStatistics.containsKey(sourceLanguage))     //Für languate Statistik
-                languageStatistics.put(sourceLanguage, 1);
-            else
-                languageStatistics.put(sourceLanguage, languageStatistics.get(sourceLanguage) + 1);
-            System.out.println(" " + result.getText());
-        }
-    }
-
-    private static String getLanguage() {
-        int max = 0;
-        String lang = "";
-        for (String i : languageStatistics.keySet()) {
-            int val = languageStatistics.get(i);
-            if (val > max) {
-                max = val;
-                lang = i;
-            }
-        }
-        return lang;
     }
 }
