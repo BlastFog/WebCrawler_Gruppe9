@@ -5,9 +5,9 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Page {
+public class Page {         //Hierachie needed; brauch eigene Url; Vaterpage sollte Kinderpages haben
     private Elements header;
-    private List<Link> links;
+    private List<Link> links;   // besser Liste von Pages
 
     public Page() {
         this.header = new Elements();

@@ -3,7 +3,6 @@ package at.gr6.crawler;
 public class Link {
     private String url;
     private int depthCounter;
-    boolean broken; //Broken link
 
     public Link(String url, int depthCounter) {
         this.url = url;
