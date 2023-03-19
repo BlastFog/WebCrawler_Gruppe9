@@ -1,6 +1,5 @@
 package at.gr6.crawler;
 
-import com.sun.net.httpserver.Headers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,7 +8,6 @@ import org.jsoup.select.Elements;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 import com.deepl.api.*;
 
@@ -27,7 +25,7 @@ public class Main {
     static Page page;
     static FileWriter fw;
 
-    public static void main(String[] args) throws IOException, DeepLException, InterruptedException {
+    public static void main(String[] args) {
         setup();
         url = /*"http://www.broken-404.com"*/args[0];
         depth = Integer.parseInt(args[1]);
@@ -36,7 +34,6 @@ public class Main {
 
         String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
         translator = new Translator(authKey);
-        //System.out.println("--------------------PAGE-START--------------------");
 
         readPage(link);
 
@@ -68,7 +65,6 @@ public class Main {
         }
     }
 
-
     private static void writeFile() {
         try {
             fw.write("input: <a>" + url + "</a>\n");
@@ -83,7 +79,6 @@ public class Main {
     }
 
     private static void writeHeader(String headers) {
-        //System.out.println(headers);
         try {
             fw.write(headers);
         } catch (IOException e) {
@@ -119,13 +114,10 @@ public class Main {
             String headerString = "";
 
             for (Element h : headers) {     //Headers
-                //System.out.println(h.text());
                 if(h.text().isEmpty())      //if not checked: it goes into the catch
                     continue;
                 Element res = translateHeader(h);
-                //Element res = new Element(result.getText());
                 page.getHeader().add(res);
-                //System.out.println(res.tag());
                 for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)
                     headerString += "#";
                 headerString += setCorrectIndentation(currentDepth);
@@ -138,36 +130,22 @@ public class Main {
                 String url1 = e.attr("abs:href");
                 link1 = new Link(url1, currentDepth + 1);    //Next Page is old depth+1
                 page.getLinks().add(link1);
-                //depthSymbols(currentDepth + 1);
                 String linkStr = "";
                 linkStr += setCorrectIndentation(currentDepth);
                 linkStr += (" " + url1 + "\n");
                 writeLink(linkStr);   //Write Links
 
-                //System.out.println("link to: " + link1);
-
-                if (currentDepth < depth) {
+                if (currentDepth < depth)
                     readPage(link1);
-                    //System.out.println("--------------------PAGE-START--------------------");
-                }
             }
-            //System.out.println("---------------------PAGE-END---------------------");
         } catch (Exception e) {
             System.out.println("Broken link: " + link.getUrl());
             e.printStackTrace();
         }
     }
 
-    /*private static void depthSymbols(int depth) {
-        for (int i = 0; i < depth; i++) {
-            System.out.print("-");
-        }
-        System.out.print(">");
-    }*/
-
     private static Element translateHeader(Element e) throws DeepLException, InterruptedException {
         TextResult result;
-        //System.out.println(e.text());
         if (translate)
             result = translator.translateText(e.text(), null, targetLanguage);
         else
@@ -179,7 +157,6 @@ public class Main {
             languageStatistics.put(sourceLanguage, 1);
         else
             languageStatistics.put(sourceLanguage, languageStatistics.get(sourceLanguage) + 1);
-        //System.out.println(" " + result.getText()); --------------------------------------------------------------
 
         return new Element(result.getText());
     }
