@@ -7,7 +7,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.deepl.api.*;
 import org.jsoup.select.Evaluator;
@@ -18,19 +20,23 @@ public class Main {
     static String sourceLanguage = "";
     static String targetLanguage = "";
     static String url = "";
-    static int depth = 0;
+    static int depth = 1;
     static TextResult result;
     static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
+    static boolean translate = false;
+    static Link link;
 
     public static void main(String[] args) throws IOException, DeepLException, InterruptedException {
         url = args[0];
         depth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
+        link = new Link(url,0);
 
         String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
         translator = new Translator(authKey);
 
         readPage(url);
+
         getFullLanguage();
         System.out.println("source language: "+sourceLanguage);
     }
@@ -142,12 +148,26 @@ public class Main {
     private static void readPage(String url) throws IOException, DeepLException, InterruptedException {
         doc = Jsoup.connect(url).get();
         Elements el = doc.select("h1,h2,h3,h4,h5,h6");
+        Elements links = doc.select("a[href]");
+        //List<Link> linksArr = new ArrayList<Link>();
+
         readHeaders(el);
+
+        for (Element e : links) {
+            //linksArr.add(new e.attr("href"),1);
+            System.out.println(e.attr("href"));
+            readPage(e.attr("href"));
+        }
+
     }
 
     private static void readHeaders(Elements el) throws DeepLException, InterruptedException {
         for (Element e : el) {
-            result = translator.translateText(e.text(), null, targetLanguage);
+            if(translate)
+                result = translator.translateText(e.text(), null, targetLanguage);
+            else
+                result = new TextResult(e.text(),"de");
+
             for (int i = Integer.parseInt(e.tagName().charAt(1) + ""); i > 0; i--) {
                 System.out.print("#");
             }
@@ -157,7 +177,6 @@ public class Main {
                 languageStatistics.put(sourceLanguage, 1);
             else
                 languageStatistics.put(sourceLanguage, languageStatistics.get(sourceLanguage) + 1);
-
             System.out.println(" " + result.getText());
         }
     }
