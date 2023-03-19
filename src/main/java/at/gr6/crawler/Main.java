@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.deepl.api.*;
-import org.jsoup.select.Evaluator;
 
 public class Main {
     static Translator translator;
@@ -23,11 +22,11 @@ public class Main {
     static int depth = 1;
     static TextResult result;
     static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
-    static boolean translate = false;
+    static boolean translate = true;
     static Link link;
 
     public static void main(String[] args) throws IOException, DeepLException, InterruptedException {
-        url = args[0];
+        url = /*"http://www.broken-404.com"*/args[0];
         depth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
         link = new Link(url, 0);
@@ -37,8 +36,9 @@ public class Main {
         System.out.println("--------------------PAGE-START--------------------");
         readPage(link);
 
-        getFullLanguage();
-        System.out.println("source language: " + sourceLanguage);
+        sourceLanguage = getFullLanguage(getLanguage().toUpperCase());
+        System.out.println("Source language: " + sourceLanguage);
+        System.out.println("Target language: " + getFullLanguage(targetLanguage.toUpperCase()));
     }
 
     private static void writeFile() {
@@ -46,41 +46,42 @@ public class Main {
     }
 
     private static void readPage(Link link) throws IOException, DeepLException, InterruptedException {
-        doc = Jsoup.connect(link.getUrl()).get();
-        int currentDepth = link.getDepthCounter();
-        Elements headers = doc.select("h1,h2,h3,h4,h5,h6"); //All Headers
-        Elements links = doc.select("a[href^=http]");       //All Links containing "http"
-        Link link1;
-        Page page1 = new Page();
+        try {
+            doc = Jsoup.connect(link.getUrl()).get();
+
+            int currentDepth = link.getDepthCounter();
+            Elements headers = doc.select("h1,h2,h3,h4,h5,h6"); //All Headers
+            Elements links = doc.select("a[href^=http]");       //All Links containing "http"
+            Link link1;
+            Page page1 = new Page();
 
 
-        for (Element h : headers) {     //Headers
-            page1.getHeader().add(h);
-            translateHeader(h);
-        }
-
-        for (Element e : links) {
-            String url1 = e.attr("href");
-            //ystem.out.println(url1);
-
-            link1 = new Link(url1,currentDepth+1);    //Next Page is old depth+1
-            //System.out.println(link1);
-            page1.getLinks().add(link1);
-            depthSymbols(currentDepth+1);
-            System.out.println(link1);
-
-            if(currentDepth < depth) {
-                readPage(link1);
-                System.out.println("--------------------PAGE-START--------------------");
+            for (Element h : headers) {     //Headers
+                page1.getHeader().add(h);
+                translateHeader(h);
             }
-        }
-        System.out.println("---------------------PAGE-END---------------------");
 
+            for (Element e : links) {
+                String url1 = e.attr("href");
+
+                link1 = new Link(url1, currentDepth + 1);    //Next Page is old depth+1
+                page1.getLinks().add(link1);
+                depthSymbols(currentDepth + 1);
+                System.out.println("link to: " + link1);
+
+                if (currentDepth < depth) {
+                    readPage(link1);
+                    System.out.println("--------------------PAGE-START--------------------");
+                }
+            }
+            System.out.println("---------------------PAGE-END---------------------");
+        } catch (Exception e) {
+            System.out.println("Broken link: " + link.getUrl());
+        }
     }
 
-    private static void depthSymbols(int depth){
-        //System.out.print("-");
-        for(int i = 0; i < depth; i++){
+    private static void depthSymbols(int depth) {
+        for (int i = 0; i < depth; i++) {
             System.out.print("-");
         }
         System.out.print(">");
@@ -90,14 +91,15 @@ public class Main {
         if (translate)
             result = translator.translateText(e.text(), null, targetLanguage);
         else
-            result = new TextResult(e.text(), "de");
+            result = new TextResult(e.text(), "");
 
         for (int i = Integer.parseInt(e.tagName().charAt(1) + ""); i > 0; i--) {
             System.out.print("#");
         }
         sourceLanguage = result.getDetectedSourceLanguage();
+        //System.out.println("Lang: "+sourceLanguage);
 
-        if (!languageStatistics.containsKey(sourceLanguage))     //Für languate Statistik
+        if (!languageStatistics.containsKey(sourceLanguage))     //For language statistics
             languageStatistics.put(sourceLanguage, 1);
         else
             languageStatistics.put(sourceLanguage, languageStatistics.get(sourceLanguage) + 1);
@@ -110,7 +112,7 @@ public class Main {
         String lang = "";
         for (String i : languageStatistics.keySet()) {
             int val = languageStatistics.get(i);
-            if (val > max) {
+            if (val >= max) {
                 max = val;
                 lang = i;
             }
@@ -118,103 +120,108 @@ public class Main {
         return lang;
     }
 
-    private static void getFullLanguage() {
-        switch (getLanguage().toUpperCase()) {
+    private static String getFullLanguage(String lang) {
+        String language = "";
+        switch (lang) {
             case "BG":
-                sourceLanguage = "Bulgarian";
+                language = "Bulgarian";
                 break;
             case "CS":
-                sourceLanguage = "Czech";
+                language = "Czech";
                 break;
             case "DA":
-                sourceLanguage = "Danish";
+                language = "Danish";
                 break;
             case "DE":
-                sourceLanguage = "German";
+                language = "German";
                 break;
             case "EL":
-                sourceLanguage = "Greek";
+                language = "Greek";
                 break;
             case "EN-GB":
-                sourceLanguage = "English (British)";
+                language = "English (British)";
+                break;
+            case "EN":
+                language = "English";
                 break;
             case "EN-US":
-                sourceLanguage = "English (American)";
+                language = "English (American)";
                 break;
             case "ES":
-                sourceLanguage = "Spanish";
+                language = "Spanish";
                 break;
             case "ET":
-                sourceLanguage = "Estonian";
+                language = "Estonian";
                 break;
             case "FI":
-                sourceLanguage = "Finnish";
+                language = "Finnish";
                 break;
             case "FR":
-                sourceLanguage = "French";
+                language = "French";
                 break;
             case "HU":
-                sourceLanguage = "Hungarian";
+                language = "Hungarian";
                 break;
             case "ID":
-                sourceLanguage = "Indonesian";
+                language = "Indonesian";
                 break;
             case "IT":
-                sourceLanguage = "Italian";
+                language = "Italian";
                 break;
             case "JA":
-                sourceLanguage = "Japanese";
+                language = "Japanese";
                 break;
             case "KO":
-                sourceLanguage = "Korean";
+                language = "Korean";
                 break;
             case "LT":
-                sourceLanguage = "Lithuanian";
+                language = "Lithuanian";
                 break;
             case "LV":
-                sourceLanguage = "Latvian";
+                language = "Latvian";
                 break;
             case "NB":
-                sourceLanguage = "Norwegian (Bokmål)";
+                language = "Norwegian (Bokmål)";
                 break;
             case "NL":
-                sourceLanguage = "Dutch";
+                language = "Dutch";
                 break;
             case "PL":
-                sourceLanguage = "Polish";
+                language = "Polish";
                 break;
             case "PT-BR":
-                sourceLanguage = "Portuguese (Brazilian)";
+                language = "Portuguese (Brazilian)";
                 break;
             case "PT-PT":
-                sourceLanguage = "Portuguese (all Portuguese varieties excluding Brazilian Portuguese)";
+                language = "Portuguese (all Portuguese varieties excluding Brazilian Portuguese)";
                 break;
             case "RO":
-                sourceLanguage = "Romanian";
+                language = "Romanian";
                 break;
             case "RU":
-                sourceLanguage = "Russian";
+                language = "Russian";
                 break;
             case "SK":
-                sourceLanguage = "Slovak";
+                language = "Slovak";
                 break;
             case "SL":
-                sourceLanguage = "Slovenian";
+                language = "Slovenian";
                 break;
             case "SV":
-                sourceLanguage = "Swedish";
+                language = "Swedish";
                 break;
             case "TR":
-                sourceLanguage = "Turkish";
+                language = "Turkish";
                 break;
             case "UK":
-                sourceLanguage = "Ukrainian";
+                language = "Ukrainian";
                 break;
             case "ZH":
-                sourceLanguage = "Chinese (simplified)";
+                language = "Chinese (simplified)";
                 break;
             default:
-                sourceLanguage = "Kärntnerisch";
+                language = "Kärntnerisch";
         }
+        return language;
     }
 }
