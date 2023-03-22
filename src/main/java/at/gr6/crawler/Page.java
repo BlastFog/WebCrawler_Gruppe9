@@ -60,14 +60,51 @@ public class Page {
         for(Element h: header){
             s+=h.text()+"\n";
         }
+        s+=" ,Links: {";
+        for (Page p:subPage) {
+            s+=p.getUrl()+"\n";
+        }
         s+="}";
         return s;
     }
 
+    /**
+     * Returns a String of the entire Page formatted for File I/O
+     * @return
+     */
+    public String formatPage(){
+        String str ="";
+        for(Element h: header) {
+            for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)
+                str += "#";
+            str += setCorrectIndentation(this.depth);
+            str += h.text() + "\n";
+        }
+            str+="\n";
+            for (Page p:subPage) {
+                str+="<br>";
+                str+=setCorrectIndentation(this.depth);
+                if(p.isBroken())
+                    str+="broken link <a>"+p.getUrl()+"</a>\n";
+                else
+                    str+="link to <a>"+p.getUrl()+"</a>\n";
+            }
+
+
+        return str;
+    }
+    private static String setCorrectIndentation(int depth) {  //TODO: LAGER DEN SCHEISS AUS
+        String indents = " ";
+        for (int i = 0; i < depth; i++) {
+            indents += "-";
+        }
+        return (indents += ">");
+    }
+
     public void setSubPages(Elements links) {
         for (Element e:links) {
-            System.out.println("Links:"+e.attr("abs:href"));
-            Page p = new Page(e.attr("abs:href"),this.depth+1);
+            //System.out.println("Links:"+e.attr("abs:href"));
+            this.subPage.add(new Page(e.attr("abs:href"),this.depth+1));
         }
     }
 }

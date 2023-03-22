@@ -1,5 +1,5 @@
 package at.gr6.crawler;
-
+// Dead Class!!
 public class Link {
     private String url;
     private int depthCounter;

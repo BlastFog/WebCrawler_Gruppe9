@@ -22,21 +22,29 @@ public class Main {
     static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
     static boolean translate = false;
     static Link link;
-    static Page page;
-    static FileWriter fw;
+    //static Page page;
+
+    static WriteFiler filer;
+    static Page p;
 
     public static void main(String[] args) {
-        setup();
-        url = /*"http://www.broken-404.com"*/args[0];
+        url = args[0];
         maxDepth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
-       //link = new Link(url, 0);
-
         String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
         //translator = new Translator(authKey);
-        Page p = new Page(url,1);
+        p = new Page(url,1);
         readPage(p);
-        printPages(p);
+        setupWriter();
+        write2File(p);
+        try {
+            filer.closeFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //printPages(p);
 
         //readPage(link);
 
@@ -61,22 +69,36 @@ public class Main {
         return limit;
     }
 
-    private static void setup() {
+    private static void setupWriter() {
         try {
-            fw = new FileWriter("./report.md");
-        } catch (Exception e) {
+            filer = new WriteFiler("./report.md");
+            filer.writeBeginning(p);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void write2File(Page p){
+        try {
+            filer.writeBody(p);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(p.getDepth()<maxDepth){
+            for(Page page:p.getSubPage()){
+                write2File(page);
+            }
         }
     }
     private static void printPages(Page p){
         System.out.println(p.toString());
         if(p.getDepth()<maxDepth) {
-            for (Page page : page.getSubPage()) {
+            for (Page page : p.getSubPage()) {
                 printPages(page);
             }
         }
     }
 
-    private static void writeFile() {
+   /* private static void writeFile() {
         try {
             fw.write("input: <a>" + url + "</a>\n");
             fw.write("<br>depth: " + maxDepth + "\n");
@@ -87,23 +109,23 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    private static void writeHeader(String headers) {
+    /*private static void writeHeader(String headers) {
         try {
             fw.write(headers);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    private static void writeLink(String link) {
+   /* private static void writeLink(String link) {
         try {
             fw.write("<br>"+link+"");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
     private static String setCorrectIndentation(int depth) {
         String indents = " ";
@@ -120,17 +142,18 @@ public class Main {
             p.setHeader(headers);
             p.setSubPages(links);
             if(p.getDepth()<maxDepth){
-                for(Page page:page.getSubPage()){
+                for(Page page:p.getSubPage()){
                     readPage(page);
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            p.setBroken(true);
+            e.printStackTrace();
         }
     }
 
 
-    private static void readPage(String url,int depth){
+    /*private static void readPage(String url,int depth){
         Page p = new Page(url,depth);
         try {
             doc = Jsoup.connect(link.getUrl()).get();
@@ -147,7 +170,7 @@ public class Main {
             e.printStackTrace();
 
         }
-    }
+    }*/
     //Dead Method
     /*private static void readPage(Link link) {
         //Page p = new Page(link,0);
