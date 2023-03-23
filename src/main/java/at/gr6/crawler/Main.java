@@ -17,33 +17,44 @@ public class Main {
     static String sourceLanguage = "";
     static String targetLanguage = "";
     static String url = "";
-    static int depth = 1;
+    static int maxDepth = 1;
     static TextResult result;
     static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
     static boolean translate = false;
     static Link link;
-    static Page page;
-    static FileWriter fw;
+    //static Page page;
+
+    static WriteFiler filer;
+    static Page p;
 
     public static void main(String[] args) {
-        setup();
-        url = /*"http://www.broken-404.com"*/args[0];
-        depth = Integer.parseInt(args[1]);
+        url = args[0];
+        maxDepth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
-        link = new Link(url, 0);
-
         String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
-        translator = new Translator(authKey);
+        //translator = new Translator(authKey);
+        p = new Page(url,1);
+        readPage(p);
+        setupWriter();
+        write2File(p);
+        try {
+            filer.closeFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        readPage(link);
 
-        System.out.println(getLimitString());
+        //printPages(p);
 
-        sourceLanguage = getFullLanguage(getLanguage().toUpperCase());
-        System.out.println("Source language: " + sourceLanguage);
-        System.out.println("Target language: " + getFullLanguage(targetLanguage.toUpperCase()));
+        //readPage(link);
 
-        writeFile();
+        //System.out.println(getLimitString());
+
+        //sourceLanguage = getFullLanguage(getLanguage().toUpperCase());
+        //System.out.println("Source language: " + sourceLanguage);
+        //System.out.println("Target language: " + getFullLanguage(targetLanguage.toUpperCase()));
+
+        //writeFile();
     }
 
     public static String getLimitString() {
@@ -58,17 +69,39 @@ public class Main {
         return limit;
     }
 
-    private static void setup() {
+    private static void setupWriter() {
         try {
-            fw = new FileWriter("./report.md");
-        } catch (Exception e) {
+            filer = new WriteFiler("./report.md");
+            filer.writeBeginning(p);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void write2File(Page p){
+        try {
+            filer.writeBody(p);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(p.getDepth()<maxDepth){
+            for(Page page:p.getSubPage()){
+                write2File(page);
+            }
+        }
+    }
+    private static void printPages(Page p){
+        System.out.println(p.toString());
+        if(p.getDepth()<maxDepth) {
+            for (Page page : p.getSubPage()) {
+                printPages(page);
+            }
         }
     }
 
-    private static void writeFile() {
+   /* private static void writeFile() {
         try {
             fw.write("input: <a>" + url + "</a>\n");
-            fw.write("<br>depth: " + depth + "\n");
+            fw.write("<br>depth: " + maxDepth + "\n");
             fw.write("<br>source language: " + sourceLanguage + "\n");
             fw.write("<br>target language: " + getFullLanguage(targetLanguage.toUpperCase()) + "\n");
             fw.write("<br>summary:\n");
@@ -76,23 +109,23 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    private static void writeHeader(String headers) {
+    /*private static void writeHeader(String headers) {
         try {
             fw.write(headers);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    private static void writeLink(String link) {
+   /* private static void writeLink(String link) {
         try {
             fw.write("<br>"+link+"");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
     private static String setCorrectIndentation(int depth) {
         String indents = " ";
@@ -101,8 +134,48 @@ public class Main {
         }
         return (indents += ">");
     }
+    private static void readPage(Page p){
+        try {
+            doc = Jsoup.connect(p.getUrl()).get();
+            Elements links = doc.select("a[href]");
+            Elements headers = doc.select("h1,h2,h3,h4,h5,h6");
+            p.setHeader(headers);
+            p.setSubPages(links);
+            if(p.getDepth()<maxDepth){
+                for(Page page:p.getSubPage()){
+                    readPage(page);
+                }
+            }
+        } catch (Exception e) {
+            p.setBroken(true);
+            e.printStackTrace();
+        }
+    }
 
-    private static void readPage(Link link) {
+
+    /*private static void readPage(String url,int depth){
+        Page p = new Page(url,depth);
+        try {
+            doc = Jsoup.connect(link.getUrl()).get();
+            Elements links = doc.select("a[href]");
+            Elements headers = doc.select("h1,h2,h3,h4,h5,h6");
+            //TODO: Add translation process here
+            p.setHeader(headers);
+            p.setSubPages(links);
+            if(depth<maxDepth){
+                readPage(page.getSubPage().toString(),depth+1);
+            }
+        } catch (Exception e) {
+            p.setBroken(true);
+            e.printStackTrace();
+
+        }
+    }*/
+    //Dead Method
+    /*private static void readPage(Link link) {
+        //Page p = new Page(link,0);
+
+
         try {
             doc = Jsoup.connect(link.getUrl()).get();
 
@@ -114,7 +187,7 @@ public class Main {
             String headerString = "";
 
             for (Element h : headers) {     //Headers
-                if(h.text().isEmpty())      //if not checked: it goes into the catch
+                if(h.text().isEmpty())      //if not checked: it goes into the catch NOTE: Important for translation
                     continue;
                 Element res = translateHeader(h);
                 page.getHeader().add(res);
@@ -135,14 +208,14 @@ public class Main {
                 linkStr += (" " + url1 + "\n");
                 writeLink(linkStr);   //Write Links
 
-                if (currentDepth < depth)
+                if (currentDepth < maxDepth)
                     readPage(link1);
             }
         } catch (Exception e) {
             System.out.println("Broken link: " + link.getUrl());
             e.printStackTrace();
         }
-    }
+    }*/
 
     private static Element translateHeader(Element e) throws DeepLException, InterruptedException {
         TextResult result;
