@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Page {
-    private Elements header;
+    private Elements headers;       //All headers
+
+    private ArrayList<String> headerStringList; //List of headers as String, these will be translated
     private boolean isBroken;
     private int depth;
     private String url;
@@ -18,16 +20,25 @@ public class Page {
     }
 
     public Page() {
-        this.header = new Elements();
+        this.headers = new Elements();
+        this.headerStringList = new ArrayList<>();
         this.subPage = new ArrayList<Page>();
         this.isBroken = false;
     }
     public Page(String url,int depth){
-        this.header = new Elements();
+        this.headers = new Elements();
         this.subPage = new ArrayList<Page>();
         this.url = url;
         this.depth = depth;
         this.isBroken = false;
+    }
+
+    public ArrayList<String> getHeaderStringList() {
+        return headerStringList;
+    }
+
+    public void setHeaderStringList(ArrayList<String> headerStringList) {
+        this.headerStringList = headerStringList;
     }
 
     public boolean isBroken() {
@@ -39,11 +50,11 @@ public class Page {
     }
 
     public void setHeader(Elements header) {
-        this.header = header;
+        this.headers = header;
     }
 
     public Elements getHeader() {
-        return header;
+        return headers;
     }
 
     public List<Page> getSubPage() {
@@ -57,7 +68,7 @@ public class Page {
     @Override
     public String toString() {
         String s = "Page{ url= "+this.url+", depth= "+depth+", broken="+isBroken+" ,Headers:{ \n ";
-        for(Element h: header){
+        for(Element h: headers){
             s+=h.text()+"\n";
         }
         s+=" ,Links: {";
@@ -74,8 +85,8 @@ public class Page {
      */
     public String formatPage(){
         String str ="";
-        for(Element h: header) {
-            for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)
+        for(Element h: headers) {
+            for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)  //Detect Grade of the header
                 str += "#";
             str += setCorrectIndentation(this.depth);
             str += h.text() + "\n";
@@ -93,12 +104,19 @@ public class Page {
 
         return str;
     }
-    private static String setCorrectIndentation(int depth) {  //TODO: LAGER DEN SCHEISS AUS
+    private static String setCorrectIndentation(int depth) {
         String indents = " ";
         for (int i = 0; i < depth; i++) {
             indents += "-";
         }
         return (indents += ">");
+    }
+
+    private void addHeadersToList(){
+        for (Element header: headers) {
+            headerStringList.add(header.text());
+        }
+
     }
 
     public void setSubPages(Elements links) {

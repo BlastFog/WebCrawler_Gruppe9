@@ -19,9 +19,9 @@ public class Main {
     static String url = "";
     static int maxDepth = 1;
     static TextResult result;
-    static HashMap<String, Integer> languageStatistics = new HashMap<String, Integer>();
+
     static boolean translate = false;
-    static Link link;
+
     //static Page page;
 
     static WriteFiler filer;
@@ -217,7 +217,7 @@ public class Main {
         }
     }*/
 
-    private static Element translateHeader(Element e) throws DeepLException, InterruptedException {
+    /*private static Element translateHeader(Element e) throws DeepLException, InterruptedException {
         TextResult result;
         if (translate)
             result = translator.translateText(e.text(), null, targetLanguage);
@@ -350,5 +350,5 @@ public class Main {
                 language = "Kärntnerisch";
         }
         return language;
-    }
+    }*/
 }
