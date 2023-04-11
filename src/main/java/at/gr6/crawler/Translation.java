@@ -3,12 +3,11 @@ package at.gr6.crawler;
 import com.deepl.api.DeepLException;
 import com.deepl.api.TextResult;
 import com.deepl.api.Translator;
-import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Language {
+public class Translation {
     private Translator translator;
     private String sourceLangTag;
     private String targetLangTag;
@@ -17,11 +16,12 @@ public class Language {
     static HashMap<String, Integer> languageStatistics;
     private boolean translate;
 
-    public Language(String targetLangTag, boolean translate) {
+    public Translation(String targetLangTag, boolean translate, String authKey) {
         this.targetLangTag = targetLangTag;
         this.targetLang = getFullLanguage(targetLangTag);
         this.translate = translate;
         languageStatistics = new HashMap<String, Integer>();
+        translator = new Translator(authKey);
     }
 
     public void translatePage(Page page) throws DeepLException, InterruptedException {  //translates only the String list of the Page
@@ -43,6 +43,22 @@ public class Language {
 
     }
 
+    public String getSourceLang() {
+        return sourceLang;
+    }
+
+    public void setSourceLang(String sourceLang) {
+        this.sourceLang = sourceLang;
+    }
+
+    public String getTargetLang() {
+        return targetLang;
+    }
+
+    public void setTargetLang(String targetLang) {
+        this.targetLang = targetLang;
+    }
+
     private String getdetectedLanguage() {
         int max = 0;
         String lang = "";
@@ -55,9 +71,33 @@ public class Language {
         }
         return lang;
     }
+    private void setdetectedLanguage() {
+        int max = 0;
+        String lang = "";
+        for (String i : languageStatistics.keySet()) {
+            int val = languageStatistics.get(i);
+            if (val >= max) {
+                max = val;
+                lang = i;
+            }
+        }
+        this.sourceLangTag = lang;
+        this.sourceLang = getFullLanguage(lang);
+    }
 
     public void enableTranslation(boolean translate) {
         this.translate = translate;
+    }
+    public String getLimitString() {
+        String limit = "";
+        try {
+            limit = translator.getUsage().toString();
+        } catch (DeepLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return limit;
     }
 
     private String getFullLanguage(String lang) {

@@ -24,6 +24,7 @@ public class Page {
         this.headerStringList = new ArrayList<>();
         this.subPage = new ArrayList<Page>();
         this.isBroken = false;
+        addHeadersToList();
     }
     public Page(String url,int depth){
         this.headers = new Elements();
@@ -31,6 +32,7 @@ public class Page {
         this.url = url;
         this.depth = depth;
         this.isBroken = false;
+        addHeadersToList();
     }
 
     public ArrayList<String> getHeaderStringList() {
@@ -104,7 +106,7 @@ public class Page {
 
         return str;
     }
-    private static String setCorrectIndentation(int depth) {
+    private String setCorrectIndentation(int depth) {
         String indents = " ";
         for (int i = 0; i < depth; i++) {
             indents += "-";
