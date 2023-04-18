@@ -19,11 +19,15 @@ public class FileOutput {
     public void writeBeginning(Page p) throws IOException {
         fr.write("-----START OF FILE-----");
         fr.write("input: <a>"+p.getUrl()+"</a>");
+        fr.write("\n");
     }
     public void writeLangage(Translation l) throws IOException {
-        fr.write("<br>sourceLanguage:"+l.getSourceLang());
-        fr.write("<br>target language:"+l.getTargetLang());
+        fr.write("<br>sourceLanguage: "+l.getSourceLang());
+        fr.write("\n");
+        fr.write("<br>target language: "+l.getTargetLang());
+        fr.write("\n");
         fr.write("<br>summary: ");
+        fr.write("\n");
     }
     public void writeBody(Page p) throws IOException {
         fr.write(p.formatPage());

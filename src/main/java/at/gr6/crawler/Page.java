@@ -24,7 +24,7 @@ public class Page {
         this.headerStringList = new ArrayList<>();
         this.subPage = new ArrayList<Page>();
         this.isBroken = false;
-        addHeadersToList();
+
     }
     public Page(String url,int depth){
         this.headers = new Elements();
@@ -32,7 +32,8 @@ public class Page {
         this.url = url;
         this.depth = depth;
         this.isBroken = false;
-        addHeadersToList();
+        this.headerStringList = new ArrayList<>();
+
     }
 
     public ArrayList<String> getHeaderStringList() {
@@ -87,16 +88,18 @@ public class Page {
      */
     public String formatPage(){
         String str ="";
+        int index = 0;
         for(Element h: headers) {
             for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)  //Detect Grade of the header
                 str += "#";
-            str += setCorrectIndentation(this.depth);
-            str += h.text() + "\n";
+            str += setCorrectIndentation();
+            str += headerStringList.get(index) + "\n";
+            index ++;
         }
             str+="\n";
             for (Page p:subPage) {
                 str+="<br>";
-                str+=setCorrectIndentation(this.depth);
+                str+=setCorrectIndentation();
                 if(p.isBroken())
                     str+="broken link <a>"+p.getUrl()+"</a>\n";
                 else
@@ -106,7 +109,29 @@ public class Page {
 
         return str;
     }
-    private String setCorrectIndentation(int depth) {
+    public String formatPageOld(){
+        String str ="";
+        int index = 0;
+        for(Element h: headers) {
+            for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)  //Detect Grade of the header
+                str += "#";
+            str += setCorrectIndentation();
+            str += h.text() + "\n";
+        }
+        str+="\n";
+        for (Page p:subPage) {
+            str+="<br>";
+            str+=setCorrectIndentation();
+            if(p.isBroken())
+                str+="broken link <a>"+p.getUrl()+"</a>\n";
+            else
+                str+="link to <a>"+p.getUrl()+"</a>\n";
+        }
+
+
+        return str;
+    }
+    private String setCorrectIndentation() {
         String indents = " ";
         for (int i = 0; i < depth; i++) {
             indents += "-";
@@ -114,7 +139,7 @@ public class Page {
         return (indents += ">");
     }
 
-    private void addHeadersToList(){
+    public void addHeadersToList(){
         for (Element header: headers) {
             headerStringList.add(header.text());
         }
