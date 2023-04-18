@@ -71,7 +71,7 @@ public class Page {
     public String toString() {
         String s = "Page{ url= "+this.url+", depth= "+depth+", broken="+isBroken+" ,Headers:{ \n ";
         for(Element h: headers){
-            s+=h.text()+"\n";
+            s += h.text()+"\n";
         }
         s+=" ,Links: {";
         for (Page p:subPage) {
