@@ -105,8 +105,6 @@ public class Page {
                 else
                     str+="link to <a>"+p.getUrl()+"</a>\n";
             }
-
-
         return str;
     }
     public String formatPageOld(){

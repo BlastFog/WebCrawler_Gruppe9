@@ -44,7 +44,7 @@ public class Translation {
     }
 
     public String getSourceLang() {
-        return sourceLang;
+        return getFullLanguage(sourceLangTag);
     }
 
     public void setSourceLang(String sourceLang) {
@@ -102,7 +102,7 @@ public class Translation {
 
     private String getFullLanguage(String lang) {
         String language = "";
-        switch (lang) {
+        switch (lang.toUpperCase()) {
             case "BG":
                 language = "Bulgarian";
                 break;

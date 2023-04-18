@@ -86,7 +86,6 @@ public class Main {
 
     public static void write2File(Page page) {
         try {
-
             filer.writeBody(page);
         } catch (IOException e) {
             throw new RuntimeException(e);
