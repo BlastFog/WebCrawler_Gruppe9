@@ -28,7 +28,7 @@ public class Translation {
         if (translate) {
             TextResult result;
             ArrayList<String> headerList = page.getHeaderStringList();
-            for (int i = 0;i<headerList.size();i++){
+            for (int i = 0; i < headerList.size(); i++) {
                 result = translator.translateText(headerList.get(i), sourceLangTag, targetLangTag);
                 String detectedLanguage = result.getDetectedSourceLanguage();
                 headerList.set(i, result.getText());
@@ -38,40 +38,18 @@ public class Translation {
                 else
                     languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
             }
-            sourceLangTag = getdetectedLanguage();
         }
-
     }
 
     public String getSourceLang() {
-        return getFullLanguage(sourceLangTag);
-    }
-
-    public void setSourceLang(String sourceLang) {
-        this.sourceLang = sourceLang;
+        return this.sourceLang;
     }
 
     public String getTargetLang() {
-        return targetLang;
+        return this.targetLang;
     }
 
-    public void setTargetLang(String targetLang) {
-        this.targetLang = targetLang;
-    }
-
-    private String getdetectedLanguage() {
-        int max = 0;
-        String lang = "";
-        for (String i : languageStatistics.keySet()) {
-            int val = languageStatistics.get(i);
-            if (val >= max) {
-                max = val;
-                lang = i;
-            }
-        }
-        return lang;
-    }
-    private void setdetectedLanguage() {
+    public void setDetectedLanguage() {
         int max = 0;
         String lang = "";
         for (String i : languageStatistics.keySet()) {
@@ -83,21 +61,6 @@ public class Translation {
         }
         this.sourceLangTag = lang;
         this.sourceLang = getFullLanguage(lang);
-    }
-
-    public void enableTranslation(boolean translate) {
-        this.translate = translate;
-    }
-    public String getLimitString() {
-        String limit = "";
-        try {
-            limit = translator.getUsage().toString();
-        } catch (DeepLException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return limit;
     }
 
     private String getFullLanguage(String lang) {
@@ -200,10 +163,8 @@ public class Translation {
                 language = "Chinese (simplified)";
                 break;
             default:
-                language = "Kärntnerisch";
+                language = "Not Found";
         }
         return language;
     }
-
-
 }

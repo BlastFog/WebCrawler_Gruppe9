@@ -9,21 +9,13 @@ import java.io.IOException;
 import com.deepl.api.*;
 
 public class Main {
-    //static Translator translator;
     static Document doc;
-    static String sourceLanguage = "";
     static String targetLanguage = "";
     static String url = "";
-    static int maxDepth = 1;
-    //static TextResult result;
+    static int maxDepth;
     static Translation translation;
-
-    static boolean translate = true;
-
+    static boolean translate = false;
     static String authKey = "56a1abfc-d443-0e69-8963-101833b4014e:fx";
-
-    //static Page page;
-
     static FileOutput filer;
     static Page page;
 
@@ -31,12 +23,12 @@ public class Main {
         url = args[0];
         maxDepth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
-
         page = new Page(url, 1);
         readPage(page);
         setupWriter();
         setupTranslation();
         translatePages(page);
+        translation.setDetectedLanguage();
         writeLangHeader(translation);
         write2File(page);
         try {
@@ -53,7 +45,6 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-
 
     public static void setupTranslation() {
         translation = new Translation(targetLanguage, translate, authKey);
@@ -97,15 +88,6 @@ public class Main {
         }
     }
 
-    private static void printPages(Page p) {
-        System.out.println(p.toString());
-        if (p.getDepth() < maxDepth) {
-            for (Page page : p.getSubPage()) {
-                printPages(page);
-            }
-        }
-    }
-
     private static void readPage(Page p) {
         try {
             doc = Jsoup.connect(p.getUrl()).get();
@@ -121,9 +103,6 @@ public class Main {
             }
         } catch (Exception e) {
             p.setBroken(true);
-            e.printStackTrace();
         }
     }
-
-
 }
