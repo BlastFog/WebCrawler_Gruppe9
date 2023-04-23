@@ -36,7 +36,7 @@ public class Main {
     private static void writeLangHeader() {
         translation.setDetectedLanguage();
         try {
-            filer.writeLangage(translation);
+            filer.writeLanguage(translation);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

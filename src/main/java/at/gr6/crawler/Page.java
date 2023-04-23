@@ -63,8 +63,8 @@ public class Page {
         String str = "";
         int index = 0;
         for (String header : headerStringList) {
-            str += setCorrectIndentation();
-            str += headerStringList.get(index) + "\n";
+            str += fixMarkdownFormat(headerStringList.get(index));
+            str += "\n";
             index++;
         }
         str += "\n";
@@ -77,6 +77,20 @@ public class Page {
                 str += "link to <a>" + p.getUrl() + "</a>\n";
         }
         return str;
+    }
+    private String fixMarkdownFormat(String header){
+        String headerGrade= "";
+        String headerString = "";
+        for(int i = 0;i<header.length();i++){
+            if(header.charAt(i)!='#'){
+                headerGrade  = header.substring(0,i);
+                headerString = header.substring(i);
+                break;
+            }
+
+        }
+        String result = headerGrade+" "+setCorrectIndentation()+headerString;
+        return result;
     }
 
     private String setCorrectIndentation() {

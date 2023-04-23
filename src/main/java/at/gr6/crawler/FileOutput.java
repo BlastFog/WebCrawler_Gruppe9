@@ -1,11 +1,17 @@
 package at.gr6.crawler;
 
+import org.mockito.InjectMocks;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileOutput {
     private String path;
-    private FileWriter fileWriter;
+    private final FileWriter fileWriter;
+
+
+
+
 
 
     public FileOutput(String path) throws IOException {
@@ -19,8 +25,8 @@ public class FileOutput {
         fileWriter.write("\n");
     }
 
-    public void writeLangage(Translation l) throws IOException {
-        fileWriter.write("<br>sourceLanguage: " + l.getSourceLang());
+    public void writeLanguage(Translation l) throws IOException {
+        fileWriter.write("<br>source language: " + l.getSourceLang());
         fileWriter.write("\n");
         fileWriter.write("<br>target language: " + l.getTargetLang());
         fileWriter.write("\n");
@@ -34,6 +40,9 @@ public class FileOutput {
 
     public void closeFile() throws IOException {
         fileWriter.write("\n-----END OF FILE-----");
+        fileWriter.close();
+    }
+    public void  closeWriter() throws IOException {
         fileWriter.close();
     }
 }

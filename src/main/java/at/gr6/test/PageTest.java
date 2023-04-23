@@ -107,34 +107,21 @@ class PageTest {
             linkList.add(url+i);
         }
         page.setSubPages(linkList);
-
+        page.getSubPage().get(4).setBroken(true);
         String expected = generateExpectedString(depth);
 
         assertEquals(expected,page.getformattedPage());
 
-        testGetformatedPageDeeper(headerList,linkList,page);
-
         }
 
-    @Test
 
-        private void testGetformatedPageDeeper( ArrayList<String> headerList,ArrayList<String> linkList,Page page){
-        for(Page subpage:page.getSubPage()){
-            subpage.setHeaderStringList(headerList);
-            subpage.setSubPages(linkList);
-            page.getSubPage().get(4).setBroken(true);
-            String expected = generateExpectedString(depth+1);
-            assertEquals(expected,subpage.getformattedPage());
-        }
-
-        }
 
 
 
     private String generateExpectedString(int depth){
         String expected = "";
         for(int i = 0;i<5;i++){
-            expected+=getIndentation(depth)+header+i+"\n";
+            expected+=fixMarkdownFormat(header+i,depth)+"\n";
         }
         expected+="\n";
         for(int i = 0;i<4;i++){
@@ -143,6 +130,20 @@ class PageTest {
         expected+="<br> "+getIndentation(depth)+"broken link <a>"+url+4+"</a>"+"\n";
         return expected;
 
+    }
+    private String fixMarkdownFormat(String header,int depth){
+        String headerGrade= "";
+        String headerString = "";
+        for(int i = 0;i<header.length();i++){
+            if(header.charAt(i)!='#'){
+                headerGrade  = header.substring(0,i);
+                headerString = header.substring(i);
+                break;
+            }
+
+        }
+        String result = headerGrade+" "+getIndentation(depth)+headerString;
+        return result;
     }
 
     private String getIndentation(int depth){
