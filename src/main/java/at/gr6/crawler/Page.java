@@ -29,13 +29,8 @@ public class Page {
         return isBroken == page.isBroken && depth == page.depth && Objects.equals(headerStringList, page.headerStringList) && url.equals(page.url) && Objects.equals(subPage, page.subPage);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(headerStringList, isBroken, depth, url, subPage);
-    }
 
     public Page(String url, int depth) {
-        //this.headers = new Elements();
         this.subPage = new ArrayList<Page>();
         this.url = url;
         this.depth = depth;
@@ -63,23 +58,7 @@ public class Page {
         return this.depth;
     }
 
-    @Override
-    public String toString() {
-        String s = "Page{ url= " + this.url + ", depth= " + depth + ", broken=" + isBroken + " ,Headers:{ \n ";
-        for (String header : headerStringList)
-            s += header + "\n";
-        s += " ,Links: {";
-        for (Page p : subPage)
-            s += p.getUrl() + "\n";
-        s += "}";
-        return s;
-    }
 
-    /**
-     * Returns a String of the entire Page formatted for File I/O
-     *
-     * @return
-     */
     public String getformattedPage() {
         String str = "";
         int index = 0;
@@ -90,7 +69,7 @@ public class Page {
         }
         str += "\n";
         for (Page p : subPage) {
-            str += "<br>";
+            str += "<br> ";
             str += setCorrectIndentation();
             if (p.isBroken())
                 str += "broken link <a>" + p.getUrl() + "</a>\n";
@@ -101,7 +80,7 @@ public class Page {
     }
 
     private String setCorrectIndentation() {
-        String indents = " ";
+        String indents = "";
         for (int i = 0; i < depth; i++)
             indents += "-";
         indents += ">";

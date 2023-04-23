@@ -97,6 +97,7 @@ public class Main {
             }
         } catch (Exception e) {
             page.setBroken(true);
+            e.printStackTrace();
         }
     }
 }

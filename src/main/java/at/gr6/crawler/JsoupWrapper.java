@@ -17,7 +17,7 @@ public class JsoupWrapper {
     public JsoupWrapper(){
     }
 
-    public void readWebPage(String url) throws IOException {
+    public void readWebPage(String url) throws Exception {
         Document doc = Jsoup.connect(url).get();
         this.links = doc.select("a[href]");
         this.headers = doc.select("h1,h2,h3,h4,h5,h6");
