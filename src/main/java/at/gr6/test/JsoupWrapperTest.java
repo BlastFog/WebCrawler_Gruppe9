@@ -8,6 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,10 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class JsoupWrapperTest {
-    private static JsoupWrapper jsoupWrapper;
-    @BeforeAll
-    private static void setup(){
+    static JsoupWrapper jsoupWrapper;
+    static Element mockElement;
+    static Elements mockHeaderElements;
+    static Elements mockLinkElements;
+
+    @BeforeEach
+    private void setup(){
         jsoupWrapper = new JsoupWrapper();
+        mockElement = mock(Element.class);
+        mockHeaderElements = new Elements(mockElement);
+        mockLinkElements = new Elements(mockElement);
     }
 
     @Test
@@ -46,14 +54,10 @@ class JsoupWrapperTest {
 
     @Test
     void getHeadersList() {
-        Element mockElement = mock(Element.class);
-        Elements headerElements = new Elements(mockElement);
-        Elements mockLinkElements = mock(Elements.class);
-
         when(mockElement.tagName()).thenReturn("h1");
         when(mockElement.text()).thenReturn("Header");
 
-        jsoupWrapper = new JsoupWrapper(headerElements,mockLinkElements);
+        jsoupWrapper = new JsoupWrapper(mockHeaderElements,mockLinkElements);
 
         ArrayList<String> headerList = jsoupWrapper.getHeadersList();
 
@@ -64,5 +68,13 @@ class JsoupWrapperTest {
 
     @Test
     void getLinkList() {
+        when(mockElement.attr("abs:href")).thenReturn("https://example.com");
+
+        jsoupWrapper = new JsoupWrapper(mockHeaderElements,mockLinkElements);
+
+        ArrayList<String> linkList = jsoupWrapper.getLinkList();
+
+        assertEquals(1,linkList.size());
+        assertEquals("https://example.com",linkList.get(0));
     }
 }

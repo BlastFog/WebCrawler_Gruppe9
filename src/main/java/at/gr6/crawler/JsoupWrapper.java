@@ -35,17 +35,16 @@ public class JsoupWrapper {
         return headerList;
     }
     public ArrayList<String> getLinkList(){
-        ArrayList<String> headerList = new ArrayList<String>();
+        ArrayList<String> linkList = new ArrayList<String>();
         for(Element link: this.links){
-            headerList.add(link.attr("abs:href"));
+            linkList.add(link.attr("abs:href"));
         }
-        return headerList;
+        return linkList;
     }
     private String detectHeaderGrade(Element header){
         String str = "";
-        for (int i = Integer.parseInt(header.tagName().charAt(1) + ""); i > 0; i--){
+        for (int i = Integer.parseInt(header.tagName().charAt(1) + ""); i > 0; i--)
             str += "#";
-        }
         return str;
     }
 
