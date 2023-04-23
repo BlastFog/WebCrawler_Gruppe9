@@ -47,11 +47,10 @@ public class Translation {
         return this.targetLang;
     }
 
-    private void updateLanguageStatistics(String detectedLanguage){
+    private void updateLanguageStatistics(String detectedLanguage) {
         if (!languageStatistics.containsKey(detectedLanguage))     //For language statistics
             languageStatistics.put(detectedLanguage, 1);
-        else
-            languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
+        else languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
     }
 
     public void setDetectedLanguage() {
