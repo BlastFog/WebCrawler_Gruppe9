@@ -53,7 +53,7 @@ class JsoupWrapperTest {
     }
 
     @Test
-    void getHeadersList() {
+    void testGetHeadersList() {
         when(mockElement.tagName()).thenReturn("h1");
         when(mockElement.text()).thenReturn("Header");
 
@@ -67,7 +67,7 @@ class JsoupWrapperTest {
 
 
     @Test
-    void getLinkList() {
+    void testGetLinkList() {
         when(mockElement.attr("abs:href")).thenReturn("https://example.com");
 
         jsoupWrapper = new JsoupWrapper(mockHeaderElements,mockLinkElements);
