@@ -32,11 +32,9 @@ public class Translation {
                 result = translator.translateText(headerList.get(i), sourceLangTag, targetLangTag);
                 String detectedLanguage = result.getDetectedSourceLanguage();
                 headerList.set(i, result.getText());
+                updateLanguageStatistics(detectedLanguage);
 
-                if (!languageStatistics.containsKey(detectedLanguage))     //For language statistics
-                    languageStatistics.put(detectedLanguage, 1);
-                else
-                    languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
+
             }
         }
     }
@@ -47,6 +45,13 @@ public class Translation {
 
     public String getTargetLang() {
         return this.targetLang;
+    }
+
+    private void updateLanguageStatistics(String detectedLanguage){
+        if (!languageStatistics.containsKey(detectedLanguage))     //For language statistics
+            languageStatistics.put(detectedLanguage, 1);
+        else
+            languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
     }
 
     public void setDetectedLanguage() {

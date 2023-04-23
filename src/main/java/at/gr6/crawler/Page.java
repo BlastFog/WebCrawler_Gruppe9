@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Page {
-    private Elements headers;
+    //private Elements headers;
     private ArrayList<String> headerStringList; //List of headers as String, these will be translated
     private boolean isBroken;
     private int depth;
@@ -18,8 +18,12 @@ public class Page {
         return this.url;
     }
 
+    public void setHeaderStringList(ArrayList<String> headerStringList) {
+        this.headerStringList = headerStringList;
+    }
+
     public Page(String url, int depth) {
-        this.headers = new Elements();
+        //this.headers = new Elements();
         this.subPage = new ArrayList<Page>();
         this.url = url;
         this.depth = depth;
@@ -38,11 +42,11 @@ public class Page {
     public void setBroken(boolean broken) {
         this.isBroken = broken;
     }
-
+/*
     public void setHeader(Elements header) {
         this.headers = header;
     }
-
+*/
     public List<Page> getSubPage() {
         return this.subPage;
     }
@@ -54,8 +58,8 @@ public class Page {
     @Override
     public String toString() {
         String s = "Page{ url= " + this.url + ", depth= " + depth + ", broken=" + isBroken + " ,Headers:{ \n ";
-        for (Element h : headers)
-            s += h.text() + "\n";
+        for (String header : headerStringList)
+            s += header + "\n";
         s += " ,Links: {";
         for (Page p : subPage)
             s += p.getUrl() + "\n";
@@ -68,10 +72,11 @@ public class Page {
      *
      * @return
      */
+  /*
     public String formatPage() {
         String str = "";
         int index = 0;
-        for (Element h : headers) {
+        for (String header : headerStringList) {
             for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)  //Detect Grade of the header
                 str += "#";
             str += setCorrectIndentation();
@@ -95,15 +100,15 @@ public class Page {
         for (int i = 0; i < depth; i++)
             indents += "-";
         return (indents += ">");
-    }
-
+    }*/
+/*
     public void addHeadersToList() {
         for (Element header : headers)
             headerStringList.add(header.text());
     }
-
-    public void setSubPages(Elements links) {
-        for (Element e : links)
-            this.subPage.add(new Page(e.attr("abs:href"), this.depth + 1));
+*/
+    public void setSubPages(ArrayList<String> linkList) {
+        for (String link : linkList)
+            this.subPage.add(new Page(link, this.depth + 1));
     }
 }

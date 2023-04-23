@@ -19,16 +19,18 @@ public class Main {
     static FileOutput filer;
     static Page page;
 
+    static JsoupWrapper jsoupWrapper;
+
     public static void main(String[] args) {
         url = args[0];
         maxDepth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
         page = new Page(url, 1);
+        jsoupWrapper = new JsoupWrapper();
         readPage(page);
         setupWriter();
         setupTranslation();
         translatePages(page);
-        translation.setDetectedLanguage();
         writeLangHeader(translation);
         write2File(page);
         try {
@@ -39,6 +41,7 @@ public class Main {
     }
 
     private static void writeLangHeader(Translation translation) {
+        translation.setDetectedLanguage();
         try {
             filer.writeLangage(translation);
         } catch (IOException e) {
@@ -90,12 +93,9 @@ public class Main {
 
     private static void readPage(Page p) {
         try {
-            doc = Jsoup.connect(p.getUrl()).get();
-            Elements links = doc.select("a[href]");
-            Elements headers = doc.select("h1,h2,h3,h4,h5,h6");
-            p.setHeader(headers);
-            p.setSubPages(links);
-            p.addHeadersToList();
+            jsoupWrapper.readWebPage(p.getUrl());
+            p.setHeaderStringList(jsoupWrapper.getHeadersList());
+            p.setSubPages(jsoupWrapper.getLinkList());
             if (p.getDepth() < maxDepth) {
                 for (Page page : p.getSubPage()) {
                     readPage(page);
