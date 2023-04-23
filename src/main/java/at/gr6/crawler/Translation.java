@@ -20,11 +20,11 @@ public class Translation {
         this.targetLangTag = targetLangTag;
         this.targetLang = getFullLanguage(targetLangTag);
         this.translate = translate;
-        languageStatistics = new HashMap<String, Integer>();
-        translator = new Translator(authKey);
+        this.languageStatistics = new HashMap<String, Integer>();
+        this.translator = new Translator(authKey);
     }
 
-    public void translatePage(Page page) throws DeepLException, InterruptedException {  //translates only the String list of the Page
+    public void translatePage(Page page) throws DeepLException, InterruptedException {
         if (translate) {
             TextResult result;
             ArrayList<String> headerList = page.getHeaderStringList();
@@ -33,8 +33,6 @@ public class Translation {
                 String detectedLanguage = result.getDetectedSourceLanguage();
                 headerList.set(i, result.getText());
                 updateLanguageStatistics(detectedLanguage);
-
-
             }
         }
     }
@@ -48,7 +46,7 @@ public class Translation {
     }
 
     private void updateLanguageStatistics(String detectedLanguage) {
-        if (!languageStatistics.containsKey(detectedLanguage))     //For language statistics
+        if (!languageStatistics.containsKey(detectedLanguage))
             languageStatistics.put(detectedLanguage, 1);
         else languageStatistics.put(detectedLanguage, languageStatistics.get(detectedLanguage) + 1);
     }
