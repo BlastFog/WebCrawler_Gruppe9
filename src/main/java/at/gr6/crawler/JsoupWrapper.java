@@ -32,7 +32,7 @@ public class JsoupWrapper {
     public ArrayList<String> getLinkList(){
         ArrayList<String> headerList = new ArrayList<String>();
         for(Element link: links){
-            headerList.add(link.text());
+            headerList.add(link.attr("abs:href"));
         }
         return headerList;
     }
