@@ -1,14 +1,12 @@
 package at.gr6.crawler;
 
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Page {
-    //private Elements headers;
-    private ArrayList<String> headerStringList; //List of headers as String, these will be translated
+
+    private ArrayList<String> headerStringList;
     private boolean isBroken;
     private int depth;
     private String url;
@@ -42,11 +40,7 @@ public class Page {
     public void setBroken(boolean broken) {
         this.isBroken = broken;
     }
-/*
-    public void setHeader(Elements header) {
-        this.headers = header;
-    }
-*/
+
     public List<Page> getSubPage() {
         return this.subPage;
     }
@@ -72,13 +66,10 @@ public class Page {
      *
      * @return
      */
-  /*
-    public String formatPage() {
+    public String getformattedPage() {
         String str = "";
         int index = 0;
         for (String header : headerStringList) {
-            for (int i = Integer.parseInt(h.tagName().charAt(1) + ""); i > 0; i--)  //Detect Grade of the header
-                str += "#";
             str += setCorrectIndentation();
             str += headerStringList.get(index) + "\n";
             index++;
@@ -99,14 +90,10 @@ public class Page {
         String indents = " ";
         for (int i = 0; i < depth; i++)
             indents += "-";
-        return (indents += ">");
-    }*/
-/*
-    public void addHeadersToList() {
-        for (Element header : headers)
-            headerStringList.add(header.text());
+        indents += ">";
+        return (indents);
     }
-*/
+
     public void setSubPages(ArrayList<String> linkList) {
         for (String link : linkList)
             this.subPage.add(new Page(link, this.depth + 1));

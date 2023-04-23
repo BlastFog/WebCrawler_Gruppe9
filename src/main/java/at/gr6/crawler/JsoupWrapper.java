@@ -15,7 +15,6 @@ public class JsoupWrapper {
     private Elements links;
 
     public JsoupWrapper(){
-
     }
 
     public void readWebPage(String url) throws IOException {
@@ -26,7 +25,7 @@ public class JsoupWrapper {
     public ArrayList<String> getHeadersList(){
         ArrayList<String> headerList = new ArrayList<String>();
         for(Element header: headers){
-            headerList.add(header.text());
+            headerList.add(detectHeaderGrade(header)+header.text());
         }
         return headerList;
     }
@@ -36,6 +35,13 @@ public class JsoupWrapper {
             headerList.add(link.text());
         }
         return headerList;
+    }
+    private String detectHeaderGrade(Element header){
+        String str = "";
+        for (int i = Integer.parseInt(header.tagName().charAt(1) + ""); i > 0; i--){
+        str += "#";
+        }
+        return str;
     }
 
 }

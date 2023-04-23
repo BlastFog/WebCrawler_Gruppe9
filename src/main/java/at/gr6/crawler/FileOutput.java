@@ -5,34 +5,35 @@ import java.io.IOException;
 
 public class FileOutput {
     private String path;
-    private FileWriter fr;
+    private FileWriter fileWriter;
+
 
     public FileOutput(String path) throws IOException {
         this.path = path;
-        fr = new FileWriter(path);
+        fileWriter = new FileWriter(path);
     }
 
     public void writeBeginning(Page p) throws IOException {
-        fr.write("-----START OF FILE-----\n");
-        fr.write("input: <a>" + p.getUrl() + "</a>");
-        fr.write("\n");
+        fileWriter.write("-----START OF FILE-----\n");
+        fileWriter.write("input: <a>" + p.getUrl() + "</a>");
+        fileWriter.write("\n");
     }
 
     public void writeLangage(Translation l) throws IOException {
-        fr.write("<br>sourceLanguage: " + l.getSourceLang());
-        fr.write("\n");
-        fr.write("<br>target language: " + l.getTargetLang());
-        fr.write("\n");
-        fr.write("<br>summary: ");
-        fr.write("\n");
+        fileWriter.write("<br>sourceLanguage: " + l.getSourceLang());
+        fileWriter.write("\n");
+        fileWriter.write("<br>target language: " + l.getTargetLang());
+        fileWriter.write("\n");
+        fileWriter.write("<br>summary: ");
+        fileWriter.write("\n");
     }
 
     public void writeBody(Page p) throws IOException {
-        fr.write(p.formatPage());
+        fileWriter.write(p.getformattedPage());
     }
 
     public void closeFile() throws IOException {
-        fr.write("\n-----END OF FILE-----");
-        fr.close();
+        fileWriter.write("\n-----END OF FILE-----");
+        fileWriter.close();
     }
 }
