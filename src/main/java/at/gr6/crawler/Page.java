@@ -3,6 +3,7 @@ package at.gr6.crawler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Page {
 
@@ -18,6 +19,19 @@ public class Page {
 
     public void setHeaderStringList(ArrayList<String> headerStringList) {
         this.headerStringList = headerStringList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Page page = (Page) o;
+        return isBroken == page.isBroken && depth == page.depth && Objects.equals(headerStringList, page.headerStringList) && url.equals(page.url) && Objects.equals(subPage, page.subPage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(headerStringList, isBroken, depth, url, subPage);
     }
 
     public Page(String url, int depth) {

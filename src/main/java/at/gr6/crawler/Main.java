@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
         url = args[0];
         maxDepth = Integer.parseInt(args[1]);
-        targetLanguage = args[2];
+        String targetLanguage = args[2];
         page = new Page(url, 1);
         readPage(page);
         setupWriter();
