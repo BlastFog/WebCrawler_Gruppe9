@@ -18,14 +18,14 @@ public class Main {
     public static void main(String[] args) {
         url = args[0];
         maxDepth = Integer.parseInt(args[1]);
-        String targetLanguage = args[2];
+        targetLanguage = args[2];
         page = new Page(url, 1);
         readPage(page);
         setupWriter();
         setupTranslation();
         translatePages(page);
         writeLangHeader();
-        write2File(page);
+        writeToFile(page);
         try {
             filer.closeFile();
         } catch (IOException e) {
@@ -42,11 +42,11 @@ public class Main {
         }
     }
 
-    public static void setupTranslation() {
+    private static void setupTranslation() {
         translation = new Translation(targetLanguage, translate, authKey);
     }
 
-    public static void translatePages(Page page) {
+    private static void translatePages(Page page) {
         try {
             translation.translatePage(page);
         } catch (DeepLException e) {
@@ -71,7 +71,7 @@ public class Main {
         }
     }
 
-    public static void write2File(Page page) {
+    private static void writeToFile(Page page) {
         try {
             filer.writeBody(page);
         } catch (IOException e) {
@@ -79,7 +79,7 @@ public class Main {
         }
         if (page.getDepth() < maxDepth) {
             for (Page subPage : page.getSubPage()) {
-                write2File(subPage);
+                writeToFile(subPage);
             }
         }
     }
