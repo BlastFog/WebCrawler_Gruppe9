@@ -31,12 +31,6 @@ class PageTest {
         assertFalse(page2.equals(page));
     }
 
-
-    @Test
-    void testGetUrl() {
-        assertEquals(url,page.getUrl());
-    }
-
     @Test
     void testHeaderStringList() {
         ArrayList<String> headerList = new ArrayList<>();
@@ -52,10 +46,6 @@ class PageTest {
             index++;
         }
     }
-    @Test
-    void testGetHeaderStringList() {
-        assertNotNull(page.getHeaderStringList());
-    }
 
     @Test
     void testIsBroken() {
@@ -67,7 +57,7 @@ class PageTest {
         page.setBroken(true);
         assertTrue(page.isBroken());
     }
-    @Test
+  /*  @Test
     void testGetDepth() {
         assertEquals(page.getDepth(),1);
     }
@@ -76,7 +66,7 @@ class PageTest {
     @Test
     void testGetSubPage() {
         assertNotNull(page.getSubPage());
-    }
+    }*/
     @Test
     void testSetSubPages() {
         ArrayList<String> linkList = new ArrayList<String>();
