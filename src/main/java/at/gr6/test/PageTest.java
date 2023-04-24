@@ -11,11 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class PageTest {
 
     Page page;
-
     String url = "https://orf.at/";
-
     String header = "###sample Header ";
-
     int depth = 1;
 
     @BeforeEach
