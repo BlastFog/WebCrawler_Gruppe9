@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class JsoupWrapper {
 
     private Elements headers;
-
     private Elements links;
 
     public JsoupWrapper(){
@@ -29,16 +28,14 @@ public class JsoupWrapper {
     }
     public ArrayList<String> getHeadersList(){
         ArrayList<String> headerList = new ArrayList<String>();
-        for(Element header: this.headers){
+        for(Element header: this.headers)
             headerList.add(detectHeaderGrade(header)+header.text());
-        }
         return headerList;
     }
     public ArrayList<String> getLinkList(){
         ArrayList<String> linkList = new ArrayList<String>();
-        for(Element link: this.links){
+        for(Element link: this.links)
             linkList.add(link.attr("abs:href"));
-        }
         return linkList;
     }
     private String detectHeaderGrade(Element header){
