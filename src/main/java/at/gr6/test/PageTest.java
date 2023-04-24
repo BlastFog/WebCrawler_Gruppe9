@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PageTest {
-
     Page page;
     String url = "https://orf.at/";
     String header = "###sample Header ";
