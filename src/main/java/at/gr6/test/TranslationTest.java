@@ -24,16 +24,19 @@ class TranslationTest {
 
     @Test
     void testTranslatePage() throws DeepLException, InterruptedException {
-        String translated = "Welcome to this test page";
+        String translated1 = "Welcome to this test page";
+        String translated2 = "This is a test";
 
         Page testPage = new Page("https://example.com",1);
         ArrayList<String> headerList = new ArrayList<>();
         headerList.add("Willkommen auf dieser Test Seite");
+        headerList.add("Das ist ein test");
         testPage.setHeaderStringList(headerList);
 
         translation.translatePage(testPage);
 
-        assertEquals(translated,testPage.getHeaderStringList().get(0));
+        assertEquals(translated1,testPage.getHeaderStringList().get(0));
+        assertEquals(translated2,testPage.getHeaderStringList().get(1));
     }
 
     @Test
