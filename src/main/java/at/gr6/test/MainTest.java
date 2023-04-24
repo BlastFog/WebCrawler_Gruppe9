@@ -12,7 +12,6 @@ public class MainTest {
 
     @Test
     public void testMain(){
-        mockStatic(Page.class);
         String[] args = {"https://example.com","1","en-GB"};
         main(args);
     }
