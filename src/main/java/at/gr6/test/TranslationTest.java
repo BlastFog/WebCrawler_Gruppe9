@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class TranslationTest {
     static Translation translation;
     @BeforeEach
-    private void setup(){
+    private void setup() throws DeepLException, InterruptedException{
         translation = new Translation("en-GB",true,"56a1abfc-d443-0e69-8963-101833b4014e:fx");
     }
 

@@ -34,16 +34,23 @@ public class Main {
     }
 
     private static void writeLangHeader() {
-        translation.setDetectedLanguage();
+
         try {
+            translation.setDetectedLanguage();
             filer.writeLanguage(translation);
-        } catch (IOException e) {
+        } catch (IOException | DeepLException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     private static void setupTranslation() {
-        translation = new Translation(targetLanguage, translate, authKey);
+        try {
+            translation = new Translation(targetLanguage, translate, authKey);
+        } catch (DeepLException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void translatePages(Page page) {
