@@ -17,15 +17,11 @@ import static org.mockito.Mockito.when;
 class FileOutputTest {
 
     String path = "writer_test.md";
-
     FileOutput fileOutput;
-
     @Mock
     Page pageMock = mock(Page.class);
-
     @Mock
     Translation translationMoc = mock(Translation.class);
-
     FileReader reader;
     BufferedReader bufferedReader;
 
@@ -33,14 +29,10 @@ class FileOutputTest {
     void setUp() throws IOException {
         fileOutput = new FileOutput(path);
 
-
-
-        //pageMock = new Page("https://orf.at/",1);
     }
 
     @Test
     void writeBeginning() throws IOException {
-
         when(pageMock.getUrl()).thenReturn("https://orf.at/");
         fileOutput.writeBeginning(pageMock);
         fileOutput.closeWriter();
@@ -53,10 +45,13 @@ class FileOutputTest {
     void writeLanguage() throws IOException {
         when(translationMoc.getSourceLang()).thenReturn("German");
         when(translationMoc.getTargetLang()).thenReturn("English(British)");
+
         fileOutput.writeLanguage(translationMoc);
         fileOutput.closeWriter();
+
         String actual = readTest();
         String expected = "<br>source language: German\n<br>target language: English(British)\n<br>summary: \n";
+
         assertEquals(expected,actual);
     }
 
@@ -69,18 +64,16 @@ class FileOutputTest {
         String expected = "### ->Sample Header \n\n ->https://orf.at/news\n";
 
         assertEquals(expected,actual);
-
-
     }
 
     @Test
     void closeFile() throws IOException {
         assertDoesNotThrow(()-> fileOutput.closeFile());
+
         String actual = readTest();
         String expected = "\n-----END OF FILE-----";
+
         assertEquals(expected,actual);
-
-
     }
     private String readTest() throws IOException {
         reader = new FileReader(path);
@@ -92,7 +85,6 @@ class FileOutputTest {
         }
         bufferedReader.close();
         return result;
-
     }
 
     @AfterEach
