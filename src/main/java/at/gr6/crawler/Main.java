@@ -19,6 +19,8 @@ public class Main {
         url = args[0];
         maxDepth = Integer.parseInt(args[1]);
         targetLanguage = args[2];
+        if (args[3].equals("true"))
+            translate = true;
         page = new Page(url, 1);
         readPage(page);
         setupWriter();
