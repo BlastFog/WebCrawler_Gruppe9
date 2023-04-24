@@ -36,7 +36,6 @@ public class Main {
     }
 
     private static void writeLangHeader() {
-
         try {
             translation.setDetectedLanguage();
             filer.writeLanguage(translation);
@@ -106,7 +105,6 @@ public class Main {
             }
         } catch (Exception e) {
             page.setBroken(true);
-            e.printStackTrace();
         }
     }
 }
