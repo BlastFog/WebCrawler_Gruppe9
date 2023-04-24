@@ -55,32 +55,32 @@ class PageTest {
 
     }
     @Test
-    void getHeaderStringList() {
+    void testGetHeaderStringList() {
         assertNotNull(page.getHeaderStringList());
     }
 
     @Test
-    void isBroken() {
+    void testIsBroken() {
         assertFalse(page.isBroken());
     }
 
     @Test
-    void setBroken() {
+    void testSetBroken() {
         page.setBroken(true);
         assertTrue(page.isBroken());
     }
     @Test
-    void getDepth() {
+    void testGetDepth() {
         assertEquals(page.getDepth(),1);
     }
 
 
     @Test
-    void getSubPage() {
+    void testGetSubPage() {
         assertNotNull(page.getSubPage());
     }
     @Test
-    void setSubPages() {
+    void testSetSubPages() {
         ArrayList<String> linkList = new ArrayList<String>();
         for(int i=0;i<10;i++){
             linkList.add(url+i);
