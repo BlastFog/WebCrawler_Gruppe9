@@ -51,8 +51,6 @@ class PageTest {
             assertEquals(headerList.get(i),actualHeaderStringList.get(i));
             index++;
         }
-
-
     }
     @Test
     void testGetHeaderStringList() {
