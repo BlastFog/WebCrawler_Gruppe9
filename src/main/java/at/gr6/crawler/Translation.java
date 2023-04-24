@@ -22,7 +22,6 @@ public class Translation {
         this.targetLang = getFullLanguage(targetLangTag);
         this.translate = translate;
         this.languageStatistics = new HashMap<String, Integer>();
-
     }
 
     public void translatePage(Page page) throws DeepLException, InterruptedException {
@@ -67,12 +66,11 @@ public class Translation {
     }
 
     private String getFullLanguage(String langTag) throws DeepLException, InterruptedException {
-
-                for (com.deepl.api.Language l : translator.getTargetLanguages()) {
-                    if (l.getCode().toLowerCase().equals(langTag.toLowerCase())) {
-                        return l.getName();
-                    }
-                }
-            return null;
+        for (com.deepl.api.Language l : translator.getTargetLanguages()) {
+            if (l.getCode().toLowerCase().equals(langTag.toLowerCase())) {
+                return l.getName();
+            }
         }
+        return null;
+    }
 }
